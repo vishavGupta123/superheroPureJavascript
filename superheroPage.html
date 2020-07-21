@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #superhero-details {
+        text-align: center;
+        background-color: steelblue;
+      }
+      #superhero-details > img {
+        border-radius: 50%;
+        border: 2px solid black;
+        margin: 10px;
+      }
+      #powerstats {
+        text-align: center;
+        background-color: skyblue;
+        border: 1px solid black;
+        margin: 20px;
+      }
+      #powerstats > div {
+        margin: auto;
+        margin-top: 20px;
+        margin-bottom: 5px;
+      }
+      .skill-progress {
+        width: 40rem;
+        height: 1.4rem;
+        background-color: lightgrey;
+        border-radius: 0.8rem;
+        border: 1px solid black;
+        margin: 20px;
+      }
+      .skill-progress > div {
+        border-radius: 20px 20px 20px 20px;
+      }
+      .skill-progress > div span {
+        color: white;
+        margin-left: 10px;
+      }
+      #biography {
+        text-align: center;
+        background-color: beige;
+        border: 1px solid black;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 style="text-align: center; font-style: italic;">Superhero Details</h2>
+    <div id="superhero-details"></div>
+    <div id="biography">
+      <h2>Biography</h2>
+    </div>
+    <div id="powerstats">
+      <h1>Powerstats Out Of 100</h1>
+    </div>
+  </body>
+  <script>
+    let powerstatsDiv = document.getElementById("powerstats");
+
+    const params = new URLSearchParams(window.location.search);
+    console.log(params);
+    var id = params.get("id");
+    console.log(id);
+    if (id !== null) {
+      getTheSuperHero(id);
+    }
+    function getTheSuperHero(id) {
+      let heroObject = JSON.parse(localStorage.getItem(id));
+      console.log(heroObject);
+      let superDiv = document.getElementById("superhero-details");
+      let image = document.createElement("img");
+      image.setAttribute("src", heroObject.image.url);
+      image.style.height = "400px";
+      image.style.width = "400px";
+      superDiv.appendChild(image);
+      let h2Tag = document.createElement("h2");
+      h2Tag.innerText = heroObject.name;
+      superDiv.appendChild(h2Tag);
+      let biographydiv = document.getElementById("biography");
+      let h4Tag = document.createElement("h4");
+      h4Tag.innerText = "Full-Name : " + heroObject.biography["full-name"];
+      biographydiv.appendChild(h4Tag);
+      let h4Tag1 = document.createElement("h4");
+      h4Tag1.innerText =
+        "First-Appearance : " + heroObject.biography["first-appearance"];
+      biographydiv.appendChild(h4Tag1);
+      let h4Tag2 = document.createElement("h4");
+      h4Tag2.innerText = "Publisher : " + heroObject.biography.publisher;
+      biographydiv.appendChild(h4Tag2);
+
+      console.log(Object.keys(heroObject.powerstats));
+      let arr = Object.keys(heroObject.powerstats);
+      for (let j = 0; j < arr.length; j++) {
+        console.log(heroObject.powerstats[arr[j]]);
+        createAProgressBar(arr[j], heroObject.powerstats[arr[j]]);
+      }
+    }
+
+    function createAProgressBar(Power, Value) {
+      let newDiv = document.createElement("div");
+      newDiv.classList.add("skill-progress");
+      let skillProgressDiv = document.createElement("div");
+      newDiv.appendChild(skillProgressDiv);
+      skillProgressDiv.style.height = "inherit";
+      skillProgressDiv.style.width = Value + "%";
+      skillProgressDiv.style.backgroundColor = "orange";
+      let spanElement = document.createElement("span");
+      spanElement.appendChild(
+        document.createTextNode(Power + " " + Value + "%")
+      );
+      skillProgressDiv.appendChild(spanElement);
+      powerstatsDiv.appendChild(newDiv);
+    }
+  </script>
+</html>

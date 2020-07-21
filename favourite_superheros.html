@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      #favourite-list {
+        margin: auto;
+        border: 1px solid black;
+        text-align: center;
+        list-style-type: none;
+        background-color: turquoise;
+      }
+      #favourite-list > li > img {
+        border: 2px solid black;
+      }
+      #favourite-list > li {
+        border-bottom: 1px solid black;
+        margin: 10px;
+        padding: 10px;
+      }
+      #favourite-list > li > h2 {
+        font-size: larger;
+        font-weight: bolder;
+        font-style: italic;
+        background-color: violet;
+      }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    <h2 style="text-align: center;">Favourite SuperHeroes</h2>
+    <ul id="favourite-list"></ul>
+
+    <script>
+      let favouriteList = document.getElementById("favourite-list");
+      for (let i = 0; i < localStorage.length; i++) {
+        let newHeroObject = JSON.parse(
+          localStorage.getItem(localStorage.key(i))
+        );
+        let newListItem = document.createElement("li");
+        let image = document.createElement("img");
+        let unfavouriteButton = document.createElement("button");
+        unfavouriteButton.appendChild(document.createTextNode("Unfavourite"));
+        unfavouriteButton.value = newHeroObject.id;
+        unfavouriteButton.addEventListener("click", function () {
+          unfavouriteThisHero(unfavouriteButton.value);
+        });
+        image.style.height = "400px";
+        image.style.width = "400px";
+        image.style.cursor = "pointer";
+        image.setAttribute("src", newHeroObject.image.url);
+        image.style.borderRadius = "50%";
+        image.addEventListener("click", function () {
+          window.open("superheroPage.html?id=" + newHeroObject.id, "_self");
+        });
+        let h2Tag = document.createElement("h2");
+        h2Tag.innerText = newHeroObject.name;
+        newListItem.appendChild(image);
+        newListItem.appendChild(h2Tag);
+        newListItem.append(unfavouriteButton);
+        favouriteList.appendChild(newListItem);
+      }
+      function unfavouriteThisHero(id) {
+        localStorage.removeItem(id);
+        location.reload();
+      }
+    </script>
+  </body>
+</html>

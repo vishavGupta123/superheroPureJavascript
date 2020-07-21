@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      nav {
+        height: 50px;
+        background-color: blueviolet;
+        border-radius: 20px;
+        box-shadow: 1px 2px black;
+        display: flex;
+        justify-content: space-between;
+        margin: 20px;
+      }
+      nav h2 {
+        color: white;
+        font-weight: bolder;
+        margin: 7px;
+      }
+      nav button {
+        height: 30px;
+        width: 100px;
+        margin: 10px;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        cursor: pointer;
+        font-size: larger;
+        color: white;
+      }
+      #input-div {
+        text-align: center;
+      }
+      #superhero-input {
+        height: 30px;
+        width: 50%;
+        border-radius: 20px;
+        display: block;
+        margin: auto;
+      }
+      #list {
+        list-style-type: none;
+        margin-top: -5px;
+        width: 50%;
+        margin: auto;
+      }
+      #list li {
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+        justify-content: space-evenly;
+      }
+      #list li img {
+        margin: auto;
+        border-radius: 50%;
+      }
+      #list li button {
+        max-height: 30px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <h2>Superhero Hunter</h2>
+      <button onclick="showFavourites()">Favourites</button>
+    </nav>
+    <div id="input-div">
+      <input
+        id="superhero-input"
+        type="text"
+        type="text"
+        placeholder="enter super hero name"
+        onkeypress="search(this)"
+      />
+    </div>
+    <ul id="list"></ul>
+  </body>
+  <script>
+    let list = document.getElementById("list");
+    function search(ele) {
+      console.log(ele.value);
+      let url = `https://superheroapi.com/api.php/493615828267972/search/${ele.value}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then(function (data) {
+          if (data.response !== "error") {
+            list.innerHTML = "";
+            for (let i = 0; i < data.results.length; i++) {
+              let newListItem = document.createElement("li");
+              let imgElement = document.createElement("img");
+              imgElement.setAttribute("src", data.results[i].image.url);
+              imgElement.style.height = "200px";
+              imgElement.style.width = "200px";
+              imgElement.style.display = "block";
+              let favouriteButton = document.createElement("button");
+              favouriteButton.appendChild(
+                document.createTextNode("Add to favourite")
+              );
+              favouriteButton.style.cursor = "pointer";
+              favouriteButton.addEventListener("click", function () {
+                let movieIndex = localStorage.getItem(data.results[i].id);
+                console.log(data.results[i]);
+                if (movieIndex === null) {
+                  localStorage.setItem(
+                    data.results[i].id,
+                    JSON.stringify(data.results[i])
+                  );
+                } else {
+                  alert("movie is already favourited");
+                }
+              });
+              newListItem.appendChild(
+                document.createTextNode(data.results[i].name)
+              );
+              newListItem.appendChild(imgElement);
+              newListItem.appendChild(favouriteButton);
+              list.appendChild(newListItem);
+            }
+          }
+        });
+    }
+
+    function showFavourites() {
+      window.open("favourite_superheros.html", "_self");
+      // let favouriteList = document.getElementById("favourites-list");
+      // favouriteList.innerHTML = "";
+      // favouriteList.removeAttribute("style");
+      // let list = document.getElementById("list");
+      // list.style.display = "none";
+      // for (let i = 0; i < localStorage.length; i++) {
+      //   let newObject = JSON.parse(localStorage.getItem(localStorage.key(i)));
+      //   console.log(newObject);
+      //   if (typeof newObject === "object" && newObject !== null) {
+      //     let newListItem = document.createElement("li");
+      //     let image = document.createElement("img");
+      //     image.setAttribute("src", newObject.image.url);
+      //     image.style.height = "300px";
+      //     image.style.width = "300px";
+      //     image.addEventListener("click", function () {
+      //       window.open("superheroPage.html?id=" + newObject.id, "_self");
+      //     });
+      //     let h1Tag = document.createElement("h1");
+      //     h1Tag.appendChild(document.createTextNode(newObject.name));
+      //     newListItem.appendChild(image);
+      //     newListItem.appendChild(h1Tag);
+      //     favouriteList.appendChild(newListItem);
+      //   }
+      // }
+    }
+
+    function showResults() {
+      let favouriteList = document.getElementById("favourites-list");
+      favouriteList.style.display = "none";
+      let list = document.getElementById("list");
+      list.removeAttribute("style");
+    }
+  </script>
+</html>
